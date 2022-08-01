@@ -1,1 +1,5 @@
-const routes = []
+const routes = [
+
+]
+
+module.exports = routes;
