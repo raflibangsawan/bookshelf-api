@@ -26,7 +26,7 @@ const addBook = (request, h) => {
 
     books.push(newBook);
 
-    const isSuccess = books.filter((book) => book.id === id).length > 0;
+    const isSuccess = (books.filter((book) => book.id === id).length > 0) && (name != null) && (readPage <= pageCount);
 
     if (isSuccess) {
         const response = h.response({
@@ -40,9 +40,45 @@ const addBook = (request, h) => {
         response.code(201);
         return response;
     }
-    //TO DO: buat error message
+
+    else {
+        if (name == null) {
+            const response = h.response({
+                status: 'fail',
+                message: 'Gagal menambahkan buku. Mohon isi nama buku',
+            });
+            response.code(400);
+            return response;
+        }
+        
+        else if (readPage > pageCount) {
+            const response = h.response({
+                status: 'fail',
+                message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+            });
+            response.code(400);
+            return response;
+        }
+
+        else {
+            const response = h.response({
+                status: 'error',
+                message: 'Buku gagal ditambahkan',
+            });
+            response.code(500);
+            return response;
+        }
+    }
 }
+
+const getBooks = (request, h) => ({
+    status: 'success',
+    data: {
+        books
+    },
+});
 
 module.exports = {
     addBook,
+    getBooks,
 };
