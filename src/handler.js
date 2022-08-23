@@ -170,7 +170,7 @@ const deleteBook = (request, h) => {
 
     const idx = books.findIndex((eachBook) => eachBook.id == bookId);
 
-    if (idx !== 1) {
+    if (idx !== -1) {
         books.splice(idx, 1);
         const response = h.response({
             status: 'success',
