@@ -11,6 +11,24 @@ const addBook = (request, h) => {
 
   const finished = pageCount === readPage;
 
+  if (name == null) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal menambahkan buku. Mohon isi nama buku',
+    });
+    response.code(400);
+    return response;
+  }
+
+  if (readPage > pageCount) {
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
+    });
+    response.code(400);
+    return response;
+  }
+
   const newBook = {
     id,
     name,
@@ -29,24 +47,6 @@ const addBook = (request, h) => {
   books.push(newBook);
 
   const isSuccess = (books.filter((book) => book.id === id).length > 0);
-
-  if (name == null) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal menambahkan buku. Mohon isi nama buku',
-    });
-    response.code(400);
-    return response;
-  }
-
-  if (readPage > pageCount) {
-    const response = h.response({
-      status: 'fail',
-      message: 'Gagal menambahkan buku. readPage tidak boleh lebih besar dari pageCount',
-    });
-    response.code(400);
-    return response;
-  }
 
   if (isSuccess) {
     const response = h.response({
