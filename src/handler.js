@@ -28,22 +28,7 @@ const addBook = (request, h) => {
 
   books.push(newBook);
 
-  const isSuccess = (books.filter((book) => book.id === id).length > 0)
-  && (name != null)
-  && (readPage <= pageCount);
-
-  if (isSuccess) {
-    const response = h.response({
-      status: 'success',
-      message: 'Buku berhasil ditambahkan',
-      data: {
-        bookId: id,
-      },
-    });
-
-    response.code(201);
-    return response;
-  }
+  const isSuccess = (books.filter((book) => book.id === id).length > 0);
 
   if (name == null) {
     const response = h.response({
@@ -63,6 +48,19 @@ const addBook = (request, h) => {
     return response;
   }
 
+  if (isSuccess) {
+    const response = h.response({
+      status: 'success',
+      message: 'Buku berhasil ditambahkan',
+      data: {
+        bookId: id,
+      },
+    });
+
+    response.code(201);
+    return response;
+  }
+
   const response = h.response({
     status: 'error',
     message: 'Buku gagal ditambahkan',
@@ -74,7 +72,7 @@ const addBook = (request, h) => {
 const getBooks = () => ({
   status: 'success',
   data: {
-    books,
+    books: books.map((book) => ({ id: book.id, name: book.name, publisher: book.publisher })),
   },
 });
 
@@ -112,31 +110,7 @@ const updateBook = (request, h) => {
 
   const finished = pageCount === readPage;
 
-  const isSuccess = (name != null) && (readPage <= pageCount) && (idx !== -1);
-
-  if (isSuccess) {
-    books[idx] = {
-      ...books[idx],
-      name,
-      year,
-      author,
-      summary,
-      publisher,
-      pageCount,
-      readPage,
-      finished,
-      reading,
-      ...books[idx],
-      updatedAt,
-    };
-
-    const response = h.response({
-      status: 'success',
-      message: 'Buku berhasil diperbarui',
-    });
-    response.code(200);
-    return response;
-  }
+  const isSuccess = idx !== -1;
 
   if (name == null) {
     const response = h.response({
@@ -156,11 +130,34 @@ const updateBook = (request, h) => {
     return response;
   }
 
+  if (isSuccess) {
+    books[idx] = {
+      ...books[idx],
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      finished,
+      reading,
+      updatedAt,
+    };
+
+    const response = h.response({
+      status: 'success',
+      message: 'Buku berhasil diperbarui',
+    });
+    response.code(200);
+    return response;
+  }
+
   const response = h.response({
     status: 'fail',
     message: 'Gagal memperbarui buku. Id tidak ditemukan',
   });
-  response.code(400);
+  response.code(404);
   return response;
 };
 
